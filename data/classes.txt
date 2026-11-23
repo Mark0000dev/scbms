@@ -1,0 +1,2 @@
+C001|Morning Yoga|U004|Monday|08:00-09:00|10|active
+C002|HIIT|U004|Wednesday|18:00-19:00|2|active

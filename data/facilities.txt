@@ -1,0 +1,4 @@
+F001|Badminton Court 1|Badminton Court|20|active
+F002|Badminton Court 2|Badminton Court|20|active
+F003|Basketball Court|Basketball Court|50|active
+F004|Fitness Room|Fitness Room|15|maintenance

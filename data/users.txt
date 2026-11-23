@@ -1,0 +1,6 @@
+U001|admin|admin123|admin|-
+U002|membership|mem123|membership|-
+U003|booking|book123|booking|-
+U004|instructor|fit123|instructor|-
+U005|ali|ali123|member|M001
+U006|sara|sara123|member|M002

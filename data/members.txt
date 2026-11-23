@@ -1,0 +1,2 @@
+M001|Ali Hassan|0123456789|ali@mail.com|Yearly|2026-01-10|2027-01-10|active
+M002|Sara Tan|0198765432|sara@mail.com|Monthly|2026-10-01|2026-10-31|active
