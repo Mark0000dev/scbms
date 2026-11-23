@@ -49,11 +49,7 @@ scbms/
 │   ├── booking.py       # Booking Officer
 │   ├── fitness.py       # Fitness Instructor
 │   └── member.py        # Member
-├── data/                # *.txt data files with sample records
-└── docs/
-    ├── ARCHITECTURE.md  # how the program works (schemes)
-    ├── TASKS.md         # who does what + deadlines
-    └── DATA_FORMAT.md   # fields of every file
+└── data/                # *.txt data files with sample records
 ```
 
 ## Unique features → where they live
