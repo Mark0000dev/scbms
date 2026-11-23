@@ -10,7 +10,7 @@ from modules import booking, fitness
 
 
 def make_booking(member_id):
-    """TODO: choose facility + date + slot -> booking.create_booking(member_id, ...)."""
+    """TODO: choose facility + date + slot -> booking.create_booking(tp194772, ...)."""
     print("TODO: make_booking")
 
 
