@@ -3,7 +3,7 @@ Shared file layer. EVERYONE uses these functions - nobody opens data files direc
 
 Records are stored one per line, fields separated by "|".
 In Python a record is a dict: {"facility_id": "F001", "name": "Court A", ...}
-Field order for every file is defined in FIELDS below (see docs/DATA_FORMAT.md).
+Field order for every file is defined in FIELDS below.
 
 Owner: Mark (Team lead). Ask before changing a function signature.
 """
