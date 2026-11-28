@@ -1,73 +1,70 @@
-"""
-Shared input / output helpers so every menu behaves the same way.
-Owner: Mark (Team lead).
-"""
-from datetime import date, datetime
+# Ask the user for input and print tables.
+from datetime import datetime
 
-TIME_SLOTS = [f"{h:02d}:00-{h + 1:02d}:00" for h in range(8, 22)]  # 08:00-09:00 ... 21:00-22:00
-DATE_FORMAT = "%Y-%m-%d"
+TIME_SLOTS = ["08:00-09:00", "09:00-10:00", "10:00-11:00", "11:00-12:00",
+              "12:00-13:00", "13:00-14:00", "14:00-15:00", "15:00-16:00",
+              "16:00-17:00", "17:00-18:00", "18:00-19:00", "19:00-20:00",
+              "20:00-21:00", "21:00-22:00"]
 
 
 def get_text(prompt):
-    """Ask until the user types something non-empty (and without '|')."""
     while True:
         value = input(prompt).strip()
-        if value and "|" not in value:
+        if value != "":
             return value
-        print("  Invalid input: cannot be empty or contain '|'.")
+        print("  Cannot be empty.")
 
 
-def get_int(prompt, minimum=None, maximum=None):
+def get_int(prompt, minimum, maximum):
     while True:
         value = input(prompt).strip()
-        if value.lstrip("-").isdigit():
-            number = int(value)
-            if (minimum is None or number >= minimum) and (maximum is None or number <= maximum):
-                return number
-        print(f"  Enter a whole number between {minimum} and {maximum}.")
+        if value.isdigit() and minimum <= int(value) <= maximum:
+            return int(value)
+        print("  Enter a number from", minimum, "to", maximum)
 
 
-def get_date(prompt, allow_past=True):
-    """Ask for a date in YYYY-MM-DD format. Returns the string."""
+def get_date(prompt):
+    # returns date as text "YYYY-MM-DD"
     while True:
         value = input(prompt + " (YYYY-MM-DD): ").strip()
         try:
-            parsed = datetime.strptime(value, DATE_FORMAT).date()
+            datetime.strptime(value, "%Y-%m-%d")
+            return value
         except ValueError:
             print("  Wrong date format.")
-            continue
-        if not allow_past and parsed < date.today():
-            print("  Date cannot be in the past.")
-            continue
-        return value
 
 
 def get_choice(prompt, options):
-    """Show numbered options, return the chosen option (not the number)."""
-    for i, option in enumerate(options, start=1):
-        print(f"  {i}. {option}")
-    index = get_int(prompt, 1, len(options))
-    return options[index - 1]
+    # shows a numbered list, returns the chosen option
+    for i in range(len(options)):
+        print("  " + str(i + 1) + ". " + options[i])
+    number = get_int(prompt, 1, len(options))
+    return options[number - 1]
 
 
 def confirm(prompt):
-    return input(prompt + " (y/n): ").strip().lower() == "y"
+    answer = input(prompt + " (y/n): ").strip().lower()
+    return answer == "y"
 
 
 def today():
-    return date.today().strftime(DATE_FORMAT)
+    return datetime.now().strftime("%Y-%m-%d")
 
 
 def print_table(records, fields):
-    """Print a list of dicts as a simple aligned table."""
-    if not records:
-        print("  (no records found)")
+    if len(records) == 0:
+        print("  No records found.")
         return
-    widths = {f: max(len(f), *(len(str(r[f])) for r in records)) for f in fields}
-    print("  " + "  ".join(f.upper().ljust(widths[f]) for f in fields))
-    print("  " + "  ".join("-" * widths[f] for f in fields))
-    for r in records:
-        print("  " + "  ".join(str(r[f]).ljust(widths[f]) for f in fields))
+    header = ""
+    for field in fields:
+        header += field.upper().ljust(20)
+    print(header)
+    print("-" * len(header))
+    for record in records:
+        line = ""
+        for field in fields:
+            line += str(record[field]).ljust(20)
+        print(line)
 
 
 def pause():

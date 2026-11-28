@@ -1,16 +1,6 @@
-"""
-Shared file layer. EVERYONE uses these functions - nobody opens data files directly.
-
-Records are stored one per line, fields separated by "|".
-In Python a record is a dict: {"facility_id": "F001", "name": "Court A", ...}
-Field order for every file is defined in FIELDS below.
-
-Owner: Mark (Team lead). Ask before changing a function signature.
-"""
-import os
-
-DATA_DIR = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "data")
-SEP = "|"
+# Read and save data in .txt files.
+# One line = one record, fields separated by "|".
+# Run the program from the scbms folder:  python main.py
 
 FIELDS = {
     "users":         ["user_id", "username", "password", "role", "linked_id"],
@@ -27,59 +17,56 @@ ID_PREFIX = {
 }
 
 
-def _path(name):
-    return os.path.join(DATA_DIR, name + ".txt")
-
-
 def read_records(name):
-    """Return all records of a file as a list of dicts. Missing file -> []."""
-    fields = FIELDS[name]
+    # returns a list of dicts
     records = []
-    if not os.path.exists(_path(name)):
-        return records
-    with open(_path(name), "r", encoding="utf-8") as f:
-        for line in f:
-            line = line.strip()
-            if not line or line.startswith("#"):
-                continue
-            values = line.split(SEP)
-            if len(values) != len(fields):
-                continue  # skip broken lines instead of crashing
-            records.append(dict(zip(fields, values)))
+    file = open("data/" + name + ".txt", "r")
+    for line in file:
+        line = line.strip()
+        if line != "":
+            values = line.split("|")
+            record = dict(zip(FIELDS[name], values))
+            records.append(record)
+    file.close()
     return records
 
 
 def write_records(name, records):
-    """Overwrite the whole file with the given list of dicts (used for update/delete)."""
-    fields = FIELDS[name]
-    with open(_path(name), "w", encoding="utf-8") as f:
-        for rec in records:
-            f.write(SEP.join(str(rec[k]).replace(SEP, "/") for k in fields) + "\n")
+    # overwrite the whole file (used for update and delete)
+    file = open("data/" + name + ".txt", "w")
+    for record in records:
+        values = []
+        for field in FIELDS[name]:
+            values.append(str(record[field]))
+        file.write("|".join(values) + "\n")
+    file.close()
 
 
 def append_record(name, record):
-    """Add one new record to the end of the file (used for create)."""
-    fields = FIELDS[name]
-    with open(_path(name), "a", encoding="utf-8") as f:
-        f.write(SEP.join(str(record[k]).replace(SEP, "/") for k in fields) + "\n")
+    # add one record to the end of the file (used for create)
+    values = []
+    for field in FIELDS[name]:
+        values.append(str(record[field]))
+    file = open("data/" + name + ".txt", "a")
+    file.write("|".join(values) + "\n")
+    file.close()
 
 
 def find_by_id(name, record_id):
-    """Return the record whose first field equals record_id, or None."""
+    # returns the record or None
     id_field = FIELDS[name][0]
-    for rec in read_records(name):
-        if rec[id_field] == record_id:
-            return rec
+    for record in read_records(name):
+        if record[id_field] == record_id:
+            return record
     return None
 
 
 def generate_id(name):
-    """Next ID for a file, e.g. F001 -> F002."""
+    # next ID after the last record, e.g. F004 -> F005
+    records = read_records(name)
     prefix = ID_PREFIX[name]
-    id_field = FIELDS[name][0]
-    biggest = 0
-    for rec in read_records(name):
-        number = rec[id_field][len(prefix):]
-        if number.isdigit():
-            biggest = max(biggest, int(number))
-    return f"{prefix}{biggest + 1:03d}"
+    if len(records) == 0:
+        return prefix + "001"
+    last_id = records[-1][FIELDS[name][0]]
+    number = int(last_id[1:]) + 1
+    return prefix + str(number).zfill(3)
